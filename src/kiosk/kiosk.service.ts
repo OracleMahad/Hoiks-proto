@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { PrismaService } from '../prisma.service';
-import { Prisma, Store, Menu, Option, OptionInfo,  } from '@prisma/client';
 import { GetAllItemsResDto, Category } from './dto/get-all-items-res.dto';
 
 @Injectable()
