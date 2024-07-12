@@ -20,7 +20,7 @@ export class AdminService {
   }
 
   async createOption(createOptionDto: CreateOptionDto) {
-    return this.prisma.option.create({
+    return this.prisma.menuOption.create({
       data: {
         ...createOptionDto,
         menuId: createOptionDto.menuId,

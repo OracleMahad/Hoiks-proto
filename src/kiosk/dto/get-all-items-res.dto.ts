@@ -1,23 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
 
 export class GetAllItemsResDto {
-  @ApiProperty({ example: 1 })
-  id: number;
-
-  @ApiProperty({ example: '카페 이름' })
-  name: string;
-
-  @ApiProperty({ example: 1 })
-  masterUserId: number;
-
   @ApiProperty({ type: () => [Category] })
-  category: Category[];
+  topCategories: Category[];
 
-  constructor(id: number, name: string, masterUserId: number, categories: Category[]) {
-    this.id = id;
-    this.name = name;
-    this.masterUserId = masterUserId;
-    this.category = categories;
+  constructor(categories: Category[]) {
+    this.topCategories = categories;
   }
 }
 
@@ -25,16 +13,41 @@ export class Category {
   @ApiProperty({ example: 1 })
   id: number;
 
-  @ApiProperty({ example: '카테고리 이름' })
+  @ApiProperty({ example: '추천메뉴' })
   name: string;
 
-  @ApiProperty({ type: () => [Menu] })
-  menu: Menu[];
+  @ApiProperty({ example: 'recommendedMenu' })
+  className?: string;
 
-  constructor(id: number, name: string, menu: Menu[]) {
+  @ApiProperty({ type: () => [SubCategory] })
+  subCategories: SubCategory[];
+
+  constructor(id: number, name: string, className: string, subCategories: SubCategory[]) {
     this.id = id;
     this.name = name;
-    this.menu = menu;
+    this.className = className;
+    this.subCategories = subCategories;
+  }
+}
+
+export class SubCategory {
+  @ApiProperty({ example: 1 })
+  id: number;
+
+  @ApiProperty({ example: '시즌 메뉴' })
+  name: string;
+
+  @ApiProperty({ example: 'seasonalMenu' })
+  className?: string;
+
+  @ApiProperty({ type: () => [Menu] })
+  items: Menu[];
+
+  constructor(id: number, name: string, className: string, menu: Menu[]) {
+    this.id = id;
+    this.name = name;
+    this.className = className;
+    this.items = menu;
   }
 }
 
@@ -54,10 +67,10 @@ export class Menu {
   @ApiProperty({ required: false, example: 'https://example.com/menu.jpg' })
   photoUrl?: string;
 
-  @ApiProperty({ type: () => [Option] })
-  option: Option[];
+  @ApiProperty({ type: () => [MenuOption] })
+  option: MenuOption[];
 
-  constructor(id: number, name: string, price: number, options: Option[], info?: string, photoUrl?: string) {
+  constructor(id: number, name: string, price: number, options: MenuOption[], info?: string, photoUrl?: string) {
     this.id = id;
     this.name = name;
     this.info = info;
@@ -67,7 +80,7 @@ export class Menu {
   }
 }
 
-export class Option {
+export class MenuOption {
   @ApiProperty({ example: 1 })
   id: number;
 
@@ -91,8 +104,16 @@ export class OptionInfo {
   @ApiProperty({ example: '옵션 상세' })
   name: string;
 
-  constructor(id: number, name: string) {
+  @ApiProperty({ example: '옵션 추가 가격' })
+  price: number;
+
+  @ApiProperty({ required: false, example: 'https://example.com/menu.jpg' })
+  photoURL?: string;
+
+  constructor(id: number, name: string, price: number, photoUrl: string) {
     this.id = id;
     this.name = name;
+    this.price = price;
+    this.photoURL = photoUrl;
   }
 }

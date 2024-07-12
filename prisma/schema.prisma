@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -13,60 +7,86 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
-  id    Int     @default(autoincrement()) @id
-  email String  @unique  @db.VarChar(100)
-  password String  @db.VarChar(100)
-  name  String
-  type  String // TODO: enum
-  store Store[]
-}
-
-model Store {
-  id    Int     @default(autoincrement()) @id
-  name  String   @db.VarChar(100)
-  masterUser User    @relation(fields: [masterUserId], references: [id])
-  masterUserId Int
-  category Category[]
-}
-
 model Category {
-  id    Int     @default(autoincrement()) @id
-  name  String   @db.VarChar(50)
-  store    Store?    @relation(fields: [storeId], references: [id])
-  storeId  Int?
-  meneSearch MeneSearch[]
-}
+  id          Int           @default(autoincrement()) @id
+  name        String        @db.VarChar(100)
+  className   String?        @db.VarChar(100)
+  storeId     Int
+  Store       Store         @relation(fields: [storeId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Category_ibfk_1")
+  SubCategory SubCategory[]
 
-model MeneSearch {
-  id    Int     @default(autoincrement()) @id //for nice index
-  category  Category    @relation(fields: [categoryId], references: [id])
-  categoryId Int
-  menu  Menu    @relation(fields: [menuId], references: [id])
-  menuId Int
+  @@index([storeId], map: "storeId")
 }
 
 model Menu {
-  id    Int     @default(autoincrement()) @id
-  name  String   @db.VarChar(50)
-  info  String?   @db.VarChar(255)
-  price Int
-  photoUrl String? @db.VarChar(255)
-  meneSearch MeneSearch[]
-  option  Option[]
+  id         Int          @default(autoincrement()) @id
+  name       String       @db.VarChar(100)
+  info       String?      @db.VarChar(255)
+  price      Int?         @default(0)
+  photoURL   String?      @db.VarChar(255)
+  MenuOption MenuOption[]
+  MenuSearch MenuSearch[]
 }
 
-model Option {
-  id    Int     @default(autoincrement()) @id
-  name  String   @db.VarChar(50)
-  menu  Menu    @relation(fields: [menuId], references: [id])
-  menuId Int
-  optionInfo OptionInfo[]
+model MenuOption {
+  id         Int          @default(autoincrement()) @id
+  name       String       @db.VarChar(100)
+  menuId     Int
+  Menu       Menu         @relation(fields: [menuId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "MenuOption_ibfk_1")
+  OptionInfo OptionInfo[]
+
+  @@index([menuId], map: "menuId")
+}
+
+model MenuSearch {
+  id            Int         @default(autoincrement()) @id
+  subCategoryId Int
+  menuId        Int
+  SubCategory   SubCategory @relation(fields: [subCategoryId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "MenuSearch_ibfk_1")
+  Menu          Menu        @relation(fields: [menuId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "MenuSearch_ibfk_2")
+
+  @@index([menuId], map: "menuId")
+  @@index([subCategoryId], map: "subCategoryId")
 }
 
 model OptionInfo {
-  id    Int     @default(autoincrement()) @id
-  option  Option @relation(fields: [optionId], references: [id])
-  optionId Int
-  name  String   @db.VarChar(50)
+  id         Int        @default(autoincrement()) @id
+  name       String     @db.VarChar(100)
+  price      Int?       @default(0)
+  photoURL   String?    @db.VarChar(255)
+  optionId   Int
+  MenuOption MenuOption @relation(fields: [optionId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "OptionInfo_ibfk_1")
+
+  @@index([optionId], map: "optionId")
+}
+
+model Store {
+  id           Int        @default(autoincrement()) @id
+  name         String     @db.VarChar(100)
+  masterUserId Int
+  Category     Category[]
+  User         User       @relation(fields: [masterUserId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Store_ibfk_1")
+
+  @@index([masterUserId], map: "masterUserId")
+}
+
+model SubCategory {
+  id         Int          @default(autoincrement()) @id
+  name       String       @db.VarChar(100)
+  className  String?      @db.VarChar(100)
+  categoryId Int
+  MenuSearch MenuSearch[]
+  Category   Category     @relation(fields: [categoryId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "SubCategory_ibfk_1")
+
+  @@index([categoryId], map: "categoryId")
+}
+
+model User {
+  id          Int     @default(autoincrement()) @id
+  name        String  @db.VarChar(50)
+  email       String? @db.VarChar(100)
+  password    String  @db.VarChar(100)
+  position    String? @default("admin") @db.VarChar(100)
+  phonenumber String? @db.VarChar(100)
+  Store       Store[]
 }

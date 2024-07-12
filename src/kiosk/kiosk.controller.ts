@@ -18,6 +18,6 @@ export class KioskController {
   @ApiResponse({ status: 200, description: 'Object', type: GetAllItemsResDto })
   @Get('items')
   async findAllItems() {
-    return await this.kioskService.findAllItems(); 
+    return await this.kioskService.findAllItemsSample(); 
   }
 } 
