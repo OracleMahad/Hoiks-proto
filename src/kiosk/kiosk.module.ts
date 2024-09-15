@@ -6,5 +6,6 @@ import { PrismaService } from 'src/prisma.service';
 @Module({
   controllers: [KioskController],
   providers: [KioskService, PrismaService],
+  exports: [KioskService],
 })
 export class KioskModule {}
