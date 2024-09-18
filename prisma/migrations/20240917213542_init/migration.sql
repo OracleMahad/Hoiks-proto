@@ -2,6 +2,7 @@
 CREATE TABLE `Category` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `name` VARCHAR(100) NOT NULL,
+    `className` VARCHAR(100) NULL,
     `storeId` INTEGER NOT NULL,
 
     INDEX `storeId`(`storeId`),
@@ -66,6 +67,7 @@ CREATE TABLE `Store` (
 CREATE TABLE `SubCategory` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `name` VARCHAR(100) NOT NULL,
+    `className` VARCHAR(100) NULL,
     `categoryId` INTEGER NOT NULL,
 
     INDEX `categoryId`(`categoryId`),
