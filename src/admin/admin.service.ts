@@ -1,8 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { CreateAdminDto } from './dto/create-admin.dto';
-import { UpdateAdminDto } from './dto/update-admin.dto';
 import { PrismaService } from 'src/prisma.service';
-import { CreateCategoryDto, CreateMenuDto, CreateOptionDto, CreateOptionInfoDto, CreateSubCategoryDto, DeleteCategoryDto, DeleteMenuDto, DeleteOptionDto, DeleteOptionInfoDto, DeleteSubCategoryDto, UpdateCategoryDto, UpdateMenuDto, UpdateOptionDto, UpdateOptionInfoDto, UpdateSubCategoryDto } from './dto/create.dto';
+import { CreateCategoryDto, CreateMenuDto, CreateOptionDto, CreateOptionInfoDto, CreateSubCategoryDto, DeleteCategoryDto, DeleteMenuDto, DeleteOptionDto, DeleteOptionInfoDto, DeleteSubCategoryDto, GetCategoriesQueryDto, GetMenusQueryDto, GetSubCategoriesQueryDto, UpdateCategoryDto, UpdateMenuDto, UpdateOptionDto, UpdateOptionInfoDto, UpdateSubCategoryDto } from './dto/admin-req.dto';
+import { Menu, MenuOption } from 'src/kiosk/dto/get-all-items-res.dto';
 
 @Injectable()
 export class AdminService {
@@ -11,6 +10,10 @@ export class AdminService {
   //   return 'This action adds a new admin';
   // }
 
+  async getCategoris(query: GetCategoriesQueryDto) {
+    return this.prisma.category.findMany({ where: {...(query.storeId ? {storeId: parseInt(query.storeId, 10)} : {})} });
+  }
+
   async createCategory(createCategoryDto: CreateCategoryDto) {
     return this.prisma.category.create({ data: createCategoryDto });
   }
@@ -18,7 +21,10 @@ export class AdminService {
   async updateCategory(updateCategoryDto: UpdateCategoryDto) {
     return this.prisma.category.update({ 
       where: {id: updateCategoryDto.categoryId},
-      data: updateCategoryDto
+      data: {
+        name: updateCategoryDto.name,
+        className: updateCategoryDto.className,
+      }
     });
   }
 
@@ -29,6 +35,10 @@ export class AdminService {
     });
   }
 
+  async getSubCategoris(query: GetSubCategoriesQueryDto) {
+    return this.prisma.subCategory.findMany({ where: { categoryId: parseInt(query.categoryId, 10) }});
+  }
+
   async createSubCategory(createSubCategoryDto: CreateSubCategoryDto) {
     return this.prisma.subCategory.create({ data: createSubCategoryDto });
   }
@@ -36,7 +46,11 @@ export class AdminService {
   async updateSubCategory(updateSubCategoryDto: UpdateSubCategoryDto) {
     return this.prisma.subCategory.update({ 
       where: {id: updateSubCategoryDto.subCategoryId},
-      data: updateSubCategoryDto
+      data: {
+        name: updateSubCategoryDto.name,
+        className: updateSubCategoryDto.className,
+        categoryId: updateSubCategoryDto.categoryId,
+      }
     });
   }
 
@@ -47,8 +61,48 @@ export class AdminService {
     });
   }
 
+  async getMenus(query: GetMenusQueryDto) {
+    const allMenus = await this.prisma.menuSearch.findMany({
+      where: { subCategoryId: parseInt(query.subCategoryId, 10) },
+      include: {
+        Menu: {
+          include: {
+            MenuOption: {
+              include: {
+                OptionInfo: true
+              }
+            }
+          },
+
+        }
+      }
+    });
+
+    return allMenus.map( 
+      ms => new Menu(
+        ms.Menu.id,
+        ms.Menu.name,
+        ms.Menu.price,
+        ms.Menu.MenuOption.map(
+          (mo) => new MenuOption(
+            mo.id,
+            mo.name,
+            mo.OptionInfo
+          )
+        ),
+        ms.Menu.info,
+        ms.Menu.photoURL,
+      )
+    )
+  }
+
   async createMenu(createMenuDto: CreateMenuDto) {
-    const menu =  await this.prisma.menu.create({ data: createMenuDto });
+    const menu =  await this.prisma.menu.create({ data: {
+      name: createMenuDto.name,
+      info: createMenuDto.info,
+      price: createMenuDto.price,
+      photoURL: createMenuDto.photoURL,
+    } });
     return this.prisma.menuSearch.create({ data: {
       subCategoryId: createMenuDto.subCategoryId,
       menuId: menu.id
@@ -62,7 +116,12 @@ export class AdminService {
     });
     return this.prisma.menu.update({ 
       where: {id: updateMenuDto.menuId},
-      data: updateMenuDto
+      data: {
+        name: updateMenuDto.name,
+        info: updateMenuDto.info,
+        price: updateMenuDto.price,
+        photoURL: updateMenuDto.photoURL,
+      }
     });
   }
 
@@ -85,7 +144,9 @@ export class AdminService {
   async updateOption(updateOptionDto: UpdateOptionDto) {
     return this.prisma.menuOption.update({ 
       where: {id: updateOptionDto.optionId},
-      data: updateOptionDto
+      data: {
+        name: updateOptionDto.name
+      }
     });
   }
 
@@ -105,7 +166,11 @@ export class AdminService {
   async updateOptionInfo(updateOptionInfoDto: UpdateOptionInfoDto) {
     return this.prisma.optionInfo.update({ 
       where: {id: updateOptionInfoDto.optionInfoId},
-      data: updateOptionInfoDto
+      data: {
+        name: updateOptionInfoDto.name,
+        price: updateOptionInfoDto.price,
+        photoURL: updateOptionInfoDto.photoURL,
+      }
     });
   }
 

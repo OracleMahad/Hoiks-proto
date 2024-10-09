@@ -3,9 +3,9 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export class Customer {
     @ApiProperty({ example: '주짓수' })
-    name: string;
+    name?: string;
     @ApiProperty({ example: '010-1234-1234' })
-    phoneNumber: string;
+    phoneNumber?: string;
 }
   
 export class Item {
@@ -17,7 +17,7 @@ export class Item {
     quantity: number;
     @ApiProperty({ example: 2000 })
     price: number; 
-    @ApiProperty({ example: 4500 })
+    @ApiProperty({ example: 4500, description: 'price * quantity + option-price' })
     totalPrice: number;//price * quantity + option price
     @ApiProperty({ type: () => [MenuOption] })
     options: MenuOption[];
@@ -62,19 +62,19 @@ export class CreateOrderDto {
     @ApiProperty({ example: 'QSDFQSX' })
     orderId: string;
 
-    @ApiProperty({ example: 'AGGSGW!$@$' })
-    deviceId: string;
+    @ApiProperty({ example: 'AGGSGW!$@$', required: false })
+    deviceId?: string;
 
     @ApiProperty({ example: '2024-07-11T17:48:10.516Z' })
     orderDateTime: string;
 
-    @ApiProperty({ type: () => Customer })
-    customer?: Customer;
+    // @ApiProperty({ type: () => Customer })
+    // customer?: Customer;
 
     @ApiProperty({ type: () => [Item] })
     items: Item[];
 
-    @ApiProperty({ example: 0 })
+    @ApiProperty({ example: 0, required: false })
     extraPrice: number;
 
     @ApiProperty({ example: 109000 })
@@ -83,14 +83,14 @@ export class CreateOrderDto {
     @ApiProperty({ example: 'card' })
     paymentMethod: string;
 
-    @ApiProperty({ example: '???' })
-    orderStatus: string;
+    // @ApiProperty({ example: '???' })
+    // orderStatus: string;
 
     @ApiProperty({ example: true })
     takeOut: boolean;
 
-    @ApiProperty({ example: '안녕하세요' })
-    notes?: string; // 선택적 필드
+    // @ApiProperty({ example: '안녕하세요' })
+    // notes?: string; // 선택적 필드
   
     constructor(
       orderId: string,
@@ -108,13 +108,10 @@ export class CreateOrderDto {
       this.orderId = orderId;
       this.deviceId = deviceId;
       this.orderDateTime = orderDateTime;
-      this.customer = customer;
       this.items = items;
       this.extraPrice = extraPrice;
       this.totalPrice = totalPrice;
       this.paymentMethod = paymentMethod;
-      this.orderStatus = orderStatus;
       this.takeOut = takeOut;
-      this.notes = notes;
     }
 }

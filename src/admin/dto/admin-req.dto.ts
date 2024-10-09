@@ -7,7 +7,7 @@ export class CreateCategoryDto {
   @ApiProperty()
   className?: string;
 
-  @ApiProperty()
+  @ApiProperty({example : 1})
   storeId: number;
 }
 
@@ -74,7 +74,7 @@ export class CreateMenuDto {
   price: number;
 
   @ApiProperty()
-  photoUrl: string;
+  photoURL: string;
   
   @ApiProperty()
   subCategoryId: number;
@@ -94,7 +94,7 @@ export class UpdateMenuDto {
   price: number;
 
   @ApiProperty()
-  photoUrl: string;
+  photoURL: string;
   
   @ApiProperty()
   subCategoryId: number;
@@ -103,21 +103,6 @@ export class UpdateMenuDto {
 export class DeleteMenuDto {
   @ApiProperty()
   menuId: number;
-  
-  @ApiProperty()
-  name: string;
-
-  @ApiProperty()
-  info: string;
-
-  @ApiProperty()
-  price: number;
-
-  @ApiProperty()
-  photoUrl: string;
-  
-  @ApiProperty()
-  subCategoryId: number;
 }
 
 export class CreateOptionDto {
@@ -134,9 +119,6 @@ export class UpdateOptionDto {
 
   @ApiProperty()
   name: string;
-
-  @ApiProperty()
-  menuId: number;
 }
 
 export class DeleteOptionDto {
@@ -155,15 +137,12 @@ export class CreateOptionInfoDto {
   price: number;
 
   @ApiProperty()
-  photoUrl: string;
+  photoURL: string;
 }
 
 export class UpdateOptionInfoDto {
   @ApiProperty()
   optionInfoId: number;
-
-  @ApiProperty()
-  optionId: number;
 
   @ApiProperty()
   name: string;
@@ -172,10 +151,25 @@ export class UpdateOptionInfoDto {
   price: number;
 
   @ApiProperty()
-  photoUrl: string;
+  photoURL: string;
 }
 
 export class DeleteOptionInfoDto {
   @ApiProperty()
   optionInfoId: number;
+}
+
+export class GetCategoriesQueryDto {
+  @ApiProperty({description: "안보낼시 본인 매장. 현재는 안보내도 됨", required: false})
+  storeId?: string;
+}
+
+export class GetSubCategoriesQueryDto {
+  @ApiProperty()
+  categoryId: string;
+}
+
+export class GetMenusQueryDto {
+  @ApiProperty()
+  subCategoryId: string;
 }

@@ -1,13 +1,15 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Put, HttpCode } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Put, HttpCode, Query, UseGuards } from '@nestjs/common';
 import { AdminService } from './admin.service';
-import { CreateAdminDto } from './dto/create-admin.dto';
-import { CreateCategoryDto, CreateMenuDto, CreateOptionDto, CreateOptionInfoDto, CreateSubCategoryDto, DeleteCategoryDto, DeleteMenuDto, DeleteOptionDto, DeleteOptionInfoDto, DeleteSubCategoryDto, UpdateCategoryDto, UpdateMenuDto, UpdateOptionDto, UpdateOptionInfoDto, UpdateSubCategoryDto } from './dto/create.dto';
-import { deprecate } from 'util';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { CreateCategoryDto, CreateMenuDto, CreateOptionDto, CreateOptionInfoDto, CreateSubCategoryDto, DeleteCategoryDto, DeleteMenuDto, DeleteOptionDto, DeleteOptionInfoDto, DeleteSubCategoryDto, GetCategoriesQueryDto, GetMenusQueryDto, GetSubCategoriesQueryDto, UpdateCategoryDto, UpdateMenuDto, UpdateOptionDto, UpdateOptionInfoDto, UpdateSubCategoryDto } from './dto/admin-req.dto';
+import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags, ApiUnauthorizedResponse } from '@nestjs/swagger';
 import { GetAllItemsResDto } from 'src/kiosk/dto/get-all-items-res.dto';
 import { KioskService } from 'src/kiosk/kiosk.service';
+import { AuthGuard } from 'src/auth/auth.guard';
 
 @ApiTags('admin')
+@ApiBearerAuth()
+@UseGuards(AuthGuard)
+@ApiUnauthorizedResponse({ description: 'login or refresh'})
 @Controller('admin')
 export class AdminController {
   constructor(private readonly adminService: AdminService, private readonly kioskService: KioskService) {}
@@ -17,6 +19,11 @@ export class AdminController {
   @Get('items')
   async findAllItems() {
     return await this.kioskService.findAllItems(); 
+  }
+
+  @Get('categories')
+  getCategories(@Query() query: GetCategoriesQueryDto) {
+    return this.adminService.getCategoris(query);
   }
 
   @Post('categories')
@@ -32,6 +39,11 @@ export class AdminController {
   @Delete('categories')
   deleteCategory(@Body() deleteCategoryDto: DeleteCategoryDto) {
     return this.adminService.deleteCategory(deleteCategoryDto);
+  }
+
+  @Get('sub-categories')
+  getSubCategories(@Query() query: GetSubCategoriesQueryDto) {
+    return this.adminService.getSubCategoris(query);
   }
 
   @Post('sub-categories')
@@ -50,8 +62,8 @@ export class AdminController {
   }
 
   @Get('menus')
-  async findAllItemss() {
-    return await this.kioskService.findAllItems(); 
+  async getAllMenus(@Query() query: GetMenusQueryDto) {
+    return this.adminService.getMenus(query);
   }
   
   @Post('menus')
