@@ -48,6 +48,7 @@ lerna-debug.log*
 
 # local memo
 note
+local/
 
 # Runtime data
 pids

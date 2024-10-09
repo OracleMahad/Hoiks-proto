@@ -5,7 +5,62 @@ export class CreateCategoryDto {
   name: string;
 
   @ApiProperty()
-  storeId: number; // Optional for now; we'll handle the association
+  className?: string;
+
+  @ApiProperty()
+  storeId: number;
+}
+
+export class UpdateCategoryDto {
+  @ApiProperty()
+  categoryId: number;
+
+  @ApiProperty()
+  name: string;
+
+  @ApiProperty()
+  className?: string;
+
+  // @ApiProperty()
+  // storeId: number;
+}
+
+export class DeleteCategoryDto {
+  @ApiProperty()
+  categoryId: number;
+
+  // @ApiProperty()
+  // storeId: number;
+}
+
+export class CreateSubCategoryDto {
+  @ApiProperty()
+  name: string;
+
+  @ApiProperty()
+  className?: string;
+
+  @ApiProperty()
+  categoryId: number;
+}
+
+export class UpdateSubCategoryDto {
+  @ApiProperty()
+  subCategoryId: number;
+
+  @ApiProperty()
+  name?: string;
+
+  @ApiProperty()
+  className?: string;
+
+  @ApiProperty()
+  categoryId?: number;
+}
+
+export class DeleteSubCategoryDto {
+  @ApiProperty()
+  subCategoryId: number;
 }
 
 export class CreateMenuDto {
@@ -20,6 +75,49 @@ export class CreateMenuDto {
 
   @ApiProperty()
   photoUrl: string;
+  
+  @ApiProperty()
+  subCategoryId: number;
+}
+
+export class UpdateMenuDto {
+  @ApiProperty()
+  menuId: number;
+
+  @ApiProperty()
+  name: string;
+
+  @ApiProperty()
+  info: string;
+
+  @ApiProperty()
+  price: number;
+
+  @ApiProperty()
+  photoUrl: string;
+  
+  @ApiProperty()
+  subCategoryId: number;
+}
+
+export class DeleteMenuDto {
+  @ApiProperty()
+  menuId: number;
+  
+  @ApiProperty()
+  name: string;
+
+  @ApiProperty()
+  info: string;
+
+  @ApiProperty()
+  price: number;
+
+  @ApiProperty()
+  photoUrl: string;
+  
+  @ApiProperty()
+  subCategoryId: number;
 }
 
 export class CreateOptionDto {
@@ -27,5 +125,57 @@ export class CreateOptionDto {
   name: string;
 
   @ApiProperty()
-  menuId: number; // Associate the Option with a Menu
+  menuId: number;
+}
+
+export class UpdateOptionDto {
+  @ApiProperty()
+  optionId: number;
+
+  @ApiProperty()
+  name: string;
+
+  @ApiProperty()
+  menuId: number;
+}
+
+export class DeleteOptionDto {
+  @ApiProperty()
+  optionId: number;
+}
+
+export class CreateOptionInfoDto {
+  @ApiProperty()
+  optionId: number;
+
+  @ApiProperty()
+  name: string;
+
+  @ApiProperty()
+  price: number;
+
+  @ApiProperty()
+  photoUrl: string;
+}
+
+export class UpdateOptionInfoDto {
+  @ApiProperty()
+  optionInfoId: number;
+
+  @ApiProperty()
+  optionId: number;
+
+  @ApiProperty()
+  name: string;
+
+  @ApiProperty()
+  price: number;
+
+  @ApiProperty()
+  photoUrl: string;
+}
+
+export class DeleteOptionInfoDto {
+  @ApiProperty()
+  optionInfoId: number;
 }
