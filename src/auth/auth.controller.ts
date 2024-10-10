@@ -10,8 +10,8 @@ import {
   } from '@nestjs/common';
 import { AuthGuard } from './auth.guard';
 import { AuthService } from './auth.service';
-import { ApiBearerAuth, ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiTags, ApiUnauthorizedResponse } from '@nestjs/swagger';
-import { LoginReqDto, RefreshReqDto } from './dto/auth-req.dto';
+import { ApiBadRequestResponse, ApiBearerAuth, ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiTags, ApiUnauthorizedResponse } from '@nestjs/swagger';
+import { LoginReqDto, RefreshReqDto, SendEmailDto, SignUpReqDto } from './dto/auth-req.dto';
 import { LoginResDto, RefreshResDto } from './dto/auth-res.dto';
   
 @ApiTags('auth')
@@ -41,13 +41,18 @@ export class AuthController {
     return req.user;
   }
 
-  @Post('sign-up')
-  @ApiOkResponse({type: LoginResDto})
-  @ApiNotFoundResponse({ description: 'Not found'})
-  signUp(@Body() loginDto: LoginReqDto) {
-    return this.authService.signIn(loginDto.email, loginDto.password);
+  @Post('send-email')
+  @ApiBadRequestResponse({ description: '이미 사용하고 있는 이메일'})
+  sendEmail(@Body() sendEmailDto: SendEmailDto) {
+    return this.authService.sendEmail(sendEmailDto.email);
   }
 
-  //email unique check && email number check
+  @Post('sign-up')
+  @ApiOkResponse({type: SignUpReqDto})
+  @ApiNotFoundResponse({ description: 'Not found'})
+  signUp(@Body() signUpDto: SignUpReqDto) {
+    return this.authService.signUp(signUpDto);
+  }
+
   // block black user : 다중 시도
 }

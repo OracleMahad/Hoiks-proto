@@ -1,45 +1,46 @@
 import { Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class UsersService {
-  private readonly users = [
-    {
-      userId: 1,
-      username: 'john',
-      password: '1q2w3e4r',
-      email: 'hoiks@gmail.com',
-    },
-    {
-      userId: 2,
-      username: 'maria',
-      password: '1q2w3e4r',
-      email: 'hoiks2@gmail.com',
-    },
-  ];
+  constructor(private prisma: PrismaService) {}
 
-  create(createUserDto: CreateUserDto) {
-    return 'This action adds a new user';
-  }
+  // private readonly users = [
+  //   {
+  //     userId: 1,
+  //     username: 'john',
+  //     password: '1q2w3e4r',
+  //     email: 'hoiks@gmail.com',
+  //   },
+  //   {
+  //     userId: 2,
+  //     username: 'maria',
+  //     password: '1q2w3e4r',
+  //     email: 'hoiks2@gmail.com',
+  //   },
+  // ];
 
-  findAll() {
-    return `This action returns all users`;
-  }
-
-  findOne(id: number) {
-    return this.users.find(user => user.userId === id);
+  createUser(name: string, email: string, password: string) {
+    return this.prisma.user.create({
+      data: {
+        name,
+        email,
+        password,
+      }
+    })
   }
 
   findOneByEmail(email: string) {
-    return this.users.find(user => user.email === email);
+    return this.prisma.user.findFirst({
+      where: {email}
+    })
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+  findOneByEmailOrThrow(email: string) {
+    return this.prisma.user.findFirstOrThrow({
+      where: {email}
+    })
   }
 }
