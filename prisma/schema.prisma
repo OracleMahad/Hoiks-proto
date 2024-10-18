@@ -104,7 +104,7 @@ model OrderInfo {
 model Device {
   id            Int           @default(autoincrement()) @id
   code          String        @db.VarChar(40) @unique
-  name       String?       @db.VarChar(30)
+  name          String?       @db.VarChar(30)
   storeId       Int
   Store         Store         @relation(fields: [storeId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Device_ibfk_1")
 
