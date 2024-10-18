@@ -173,3 +173,35 @@ export class GetMenusQueryDto {
   @ApiProperty()
   subCategoryId: string;
 }
+
+export class GetDevicesQueryDto {
+  @ApiProperty({description: "안보낼시 본인 매장. 현재는 안보내도 됨", required: false})
+  storeId?: string;
+}
+
+export class CreateDeviceDto {
+  @ApiProperty()
+  name: string;
+
+  @ApiProperty({example : 1})
+  storeId: number;
+}
+
+export class UpdateDeviceDto {
+  @ApiProperty()
+  deviceId: number;
+
+  @ApiProperty()
+  name: string;
+
+  // @ApiProperty()
+  // storeId: number;
+}
+
+export class DeleteDeviceDto {
+  @ApiProperty()
+  deviceId: number;
+
+  // @ApiProperty()
+  // storeId: number;
+}

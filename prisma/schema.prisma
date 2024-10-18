@@ -65,9 +65,53 @@ model Store {
   name         String     @db.VarChar(100)
   masterUserId Int
   Category     Category[]
+  StoreInfo   StoreInfo[]
+  OrderInfo   OrderInfo[]
+  Device     Device[]
   User         User       @relation(fields: [masterUserId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Store_ibfk_1")
 
   @@index([masterUserId], map: "masterUserId")
+}
+
+model StoreInfo {
+  id          Int           @default(autoincrement()) @id
+  totalAmount Int 
+  storeId     Int
+  Store       Store         @relation(fields: [storeId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "StoreInfo_ibfk_1")
+
+  @@index([storeId], map: "storeId")
+}
+
+enum PaymentMethod {
+  CARD
+  CASH
+}
+
+model OrderInfo {
+  id            Int           @default(autoincrement()) @id
+  storeId       Int
+  Store         Store         @relation(fields: [storeId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "OrderInfo_ibfk_1")
+  details  Json          // 주문 정보(JSON 형식)
+  amount   Int           // 주문 금액
+  orderDate     DateTime      @default(now()) // 주문 시간
+  createdDate   DateTime      @default(now())
+  paymentMethod PaymentMethod // 결제 수단 (enum 사용)
+  deviceId      String        @db.VarChar(20)
+
+  @@index([storeId], map: "storeId")
+}
+
+model Device {
+  id            Int           @default(autoincrement()) @id
+  code          String        @db.VarChar(40) @unique
+  name       String?       @db.VarChar(30)
+  storeId       Int
+  Store         Store         @relation(fields: [storeId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Device_ibfk_1")
+
+  createdDate   DateTime      @default(now())
+  updatedDate   DateTime      @default(now())
+
+  @@index([storeId], map: "storeId")
 }
 
 model SubCategory {
@@ -88,5 +132,9 @@ model User {
   password    String  @db.VarChar(100)
   position    String? @default("admin") @db.VarChar(100)
   phonenumber String? @db.VarChar(100)
+
+  createdDate   DateTime      @default(now())
+  updatedDate   DateTime      @default(now())
+
   Store       Store[]
 }

@@ -46,7 +46,7 @@ export class AuthService {
     if (exUser) throw new BadRequestException("Already exist");
 
     const user = await this.usersService.createUser(signUpDto.name, signUpDto.email, signUpDto.password);
-    
+    const store = await this.usersService.createUserStore('', user.id)
     const payload = { sub: user.id, name: user.name };
     return {
       accessToken: await this.jwtService.signAsync(payload),

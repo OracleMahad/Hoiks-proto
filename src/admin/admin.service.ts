@@ -1,14 +1,12 @@
-import { Injectable } from '@nestjs/common';
+import { ForbiddenException, Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { CreateCategoryDto, CreateMenuDto, CreateOptionDto, CreateOptionInfoDto, CreateSubCategoryDto, DeleteCategoryDto, DeleteMenuDto, DeleteOptionDto, DeleteOptionInfoDto, DeleteSubCategoryDto, GetCategoriesQueryDto, GetMenusQueryDto, GetSubCategoriesQueryDto, UpdateCategoryDto, UpdateMenuDto, UpdateOptionDto, UpdateOptionInfoDto, UpdateSubCategoryDto } from './dto/admin-req.dto';
+import { CreateCategoryDto, CreateDeviceDto, CreateMenuDto, CreateOptionDto, CreateOptionInfoDto, CreateSubCategoryDto, DeleteCategoryDto, DeleteDeviceDto, DeleteMenuDto, DeleteOptionDto, DeleteOptionInfoDto, DeleteSubCategoryDto, GetCategoriesQueryDto, GetDevicesQueryDto, GetMenusQueryDto, GetSubCategoriesQueryDto, UpdateCategoryDto, UpdateDeviceDto, UpdateMenuDto, UpdateOptionDto, UpdateOptionInfoDto, UpdateSubCategoryDto } from './dto/admin-req.dto';
 import { Menu, MenuOption } from 'src/kiosk/dto/get-all-items-res.dto';
+import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
 export class AdminService {
   constructor(private prisma: PrismaService) {}
-  // create(createAdminDto: CreateAdminDto) {
-  //   return 'This action adds a new admin';
-  // }
 
   async getCategoris(query: GetCategoriesQueryDto) {
     return this.prisma.category.findMany({ where: {...(query.storeId ? {storeId: parseInt(query.storeId, 10)} : {})} });
@@ -177,6 +175,47 @@ export class AdminService {
   async deleteOptionInfo(deleteOptionInfoDto: DeleteOptionInfoDto) {
     return this.prisma.optionInfo.delete({ 
       where: {id: deleteOptionInfoDto.optionInfoId},
+    });
+  }
+
+  async getOwnStoreId(userId){
+    const store = await this.prisma.store.findFirst({
+      where: {
+        masterUserId: userId
+      }
+    })
+    return store.id
+  }
+
+  async getDevices(getDevicesQueryDto: GetDevicesQueryDto){
+    return this.prisma.device.findMany({ where: {...(getDevicesQueryDto.storeId ? {storeId: parseInt(getDevicesQueryDto.storeId, 10)} : {})} });
+
+  }
+
+  async createDevice(createDeviceDto: CreateDeviceDto, userId: number) {
+    const ownStoreId =  await this.getOwnStoreId(userId);
+    if(!ownStoreId) throw new ForbiddenException('접근 권한 없음')
+    return this.prisma.device.create({
+      data: {
+        name: createDeviceDto.name,
+        storeId: ownStoreId,
+        code: uuidv4()
+      },
+    });
+  }
+
+  async updateDevice(updateDeviceDto: UpdateDeviceDto) {
+    return this.prisma.device.update({ 
+      where: {id: updateDeviceDto.deviceId},
+      data: {
+        name: updateDeviceDto.name,
+      }
+    });
+  }
+
+  async deleteDevice(deleteDeviceDto: DeleteDeviceDto) {
+    return this.prisma.device.delete({ 
+      where: {id: deleteDeviceDto.deviceId},
     });
   }
 }

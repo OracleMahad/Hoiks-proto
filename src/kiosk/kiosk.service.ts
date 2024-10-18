@@ -7,7 +7,17 @@ import { GetAllItemsResDto, Category, SubCategory, Menu, MenuOption, OptionInfo 
 export class KioskService {
   constructor(private prisma: PrismaService) {}
 
-  create(createOrderDto: CreateOrderDto) {
+  async create(createOrderDto: CreateOrderDto) {
+    const orderInfo = await this.prisma.orderInfo.create({
+      data: {
+        storeId: 1,
+        details: JSON.parse(JSON.stringify(createOrderDto)),
+        amount: createOrderDto.totalPrice || 0,
+        deviceId: createOrderDto.deviceId || '',
+        paymentMethod: createOrderDto.paymentMethod == "card" ? 'CARD' : 'CASH'
+      }
+    })
+
     return {
       result : true
     };

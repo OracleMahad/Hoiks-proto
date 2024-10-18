@@ -1,6 +1,6 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Put, HttpCode, Query, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Put, HttpCode, Query, UseGuards, Request } from '@nestjs/common';
 import { AdminService } from './admin.service';
-import { CreateCategoryDto, CreateMenuDto, CreateOptionDto, CreateOptionInfoDto, CreateSubCategoryDto, DeleteCategoryDto, DeleteMenuDto, DeleteOptionDto, DeleteOptionInfoDto, DeleteSubCategoryDto, GetCategoriesQueryDto, GetMenusQueryDto, GetSubCategoriesQueryDto, UpdateCategoryDto, UpdateMenuDto, UpdateOptionDto, UpdateOptionInfoDto, UpdateSubCategoryDto } from './dto/admin-req.dto';
+import { CreateCategoryDto, CreateDeviceDto, CreateMenuDto, CreateOptionDto, CreateOptionInfoDto, CreateSubCategoryDto, DeleteCategoryDto, DeleteDeviceDto, DeleteMenuDto, DeleteOptionDto, DeleteOptionInfoDto, DeleteSubCategoryDto, GetCategoriesQueryDto, GetDevicesQueryDto, GetMenusQueryDto, GetSubCategoriesQueryDto, UpdateCategoryDto, UpdateDeviceDto, UpdateMenuDto, UpdateOptionDto, UpdateOptionInfoDto, UpdateSubCategoryDto } from './dto/admin-req.dto';
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags, ApiUnauthorizedResponse } from '@nestjs/swagger';
 import { GetAllItemsResDto } from 'src/kiosk/dto/get-all-items-res.dto';
 import { KioskService } from 'src/kiosk/kiosk.service';
@@ -109,6 +109,26 @@ export class AdminController {
   @Delete('options-info')
   deleteOptionInfo(@Body() deleteOptionInfoDto: DeleteOptionInfoDto) {
     return this.adminService.deleteOptionInfo(deleteOptionInfoDto);
+  }
+
+  @Get('devices')
+  async getAllDevices(@Query() query: GetDevicesQueryDto) {
+    return this.adminService.getDevices(query);
+  }
+  
+  @Post('devices')
+  createDevice(@Request() req, @Body() createDeviceDto: CreateDeviceDto) {
+    return this.adminService.createDevice(createDeviceDto, req.user.sub);
+  }
+
+  @Put('devices')
+  updateDevice(@Body() updateDeviceDto: UpdateDeviceDto) {
+    return this.adminService.updateDevice(updateDeviceDto);
+  }
+
+  @Delete('devices')
+  deleteDevice(@Body() deleteDeviceDto: DeleteDeviceDto) {
+    return this.adminService.deleteDevice(deleteDeviceDto);
   }
 
 

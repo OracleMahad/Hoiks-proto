@@ -32,6 +32,16 @@ export class UsersService {
     })
   }
 
+  
+  createUserStore(name: string, userId: number) {
+    return this.prisma.store.create({
+      data: {
+        name,
+        masterUserId: userId
+      }
+    })
+  }
+
   findOneByEmail(email: string) {
     return this.prisma.user.findFirst({
       where: {email}
