@@ -12,7 +12,7 @@ model Category {
   name        String        @db.VarChar(100)
   className   String?        @db.VarChar(100)
   storeId     Int
-  Store       Store         @relation(fields: [storeId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Category_ibfk_1")
+  Store       Store         @relation(fields: [storeId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "Category_ibfk_1")
   SubCategory SubCategory[]
 
   @@index([storeId], map: "storeId")
@@ -32,7 +32,7 @@ model MenuOption {
   id         Int          @default(autoincrement()) @id
   name       String       @db.VarChar(100)
   menuId     Int
-  Menu       Menu         @relation(fields: [menuId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "MenuOption_ibfk_1")
+  Menu       Menu         @relation(fields: [menuId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "MenuOption_ibfk_1")
   OptionInfo OptionInfo[]
 
   @@index([menuId], map: "menuId")
@@ -42,8 +42,8 @@ model MenuSearch {
   id            Int         @default(autoincrement()) @id
   subCategoryId Int
   menuId        Int
-  SubCategory   SubCategory @relation(fields: [subCategoryId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "MenuSearch_ibfk_1")
-  Menu          Menu        @relation(fields: [menuId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "MenuSearch_ibfk_2")
+  SubCategory   SubCategory @relation(fields: [subCategoryId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "MenuSearch_ibfk_1")
+  Menu          Menu        @relation(fields: [menuId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "MenuSearch_ibfk_2")
 
   @@index([menuId], map: "menuId")
   @@index([subCategoryId], map: "subCategoryId")
@@ -55,7 +55,7 @@ model OptionInfo {
   price      Int?       @default(0)
   photoURL   String?    @db.VarChar(255)
   optionId   Int
-  MenuOption MenuOption @relation(fields: [optionId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "OptionInfo_ibfk_1")
+  MenuOption MenuOption @relation(fields: [optionId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "OptionInfo_ibfk_1")
 
   @@index([optionId], map: "optionId")
 }
@@ -63,13 +63,15 @@ model OptionInfo {
 model Store {
   id           Int        @default(autoincrement()) @id
   name         String     @db.VarChar(100)
-  masterUserId Int
+  masterUserId Int?
   Category     Category[]
   StoreInfo   StoreInfo[]
   OrderInfo   OrderInfo[]
   Device     Device[]
-  User         User       @relation(fields: [masterUserId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Store_ibfk_1")
+  User         User?       @relation(fields: [masterUserId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Store_ibfk_1")
 
+  createdDate   DateTime      @default(now())
+  updatedDate   DateTime      @default(now())
   @@index([masterUserId], map: "masterUserId")
 }
 
@@ -77,7 +79,7 @@ model StoreInfo {
   id          Int           @default(autoincrement()) @id
   totalAmount Int 
   storeId     Int
-  Store       Store         @relation(fields: [storeId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "StoreInfo_ibfk_1")
+  Store       Store         @relation(fields: [storeId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "StoreInfo_ibfk_1")
 
   @@index([storeId], map: "storeId")
 }
@@ -97,6 +99,9 @@ model OrderInfo {
   createdDate   DateTime      @default(now())
   paymentMethod PaymentMethod // 결제 수단 (enum 사용)
   deviceId      String        @db.VarChar(20)
+  gender        String        @db.VarChar(10) @default("")
+  age           String        @db.VarChar(10) @default("")
+  position     String        @db.VarChar(10) @default("")
 
   @@index([storeId], map: "storeId")
 }
@@ -120,7 +125,7 @@ model SubCategory {
   className  String?      @db.VarChar(100)
   categoryId Int
   MenuSearch MenuSearch[]
-  Category   Category     @relation(fields: [categoryId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "SubCategory_ibfk_1")
+  Category   Category     @relation(fields: [categoryId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "SubCategory_ibfk_1")
 
   @@index([categoryId], map: "categoryId")
 }

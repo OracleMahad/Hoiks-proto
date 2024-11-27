@@ -14,7 +14,10 @@ export class KioskService {
         details: JSON.parse(JSON.stringify(createOrderDto)),
         amount: createOrderDto.totalPrice || 0,
         deviceId: createOrderDto.deviceId || '',
-        paymentMethod: createOrderDto.paymentMethod == "card" ? 'CARD' : 'CASH'
+        paymentMethod: createOrderDto.paymentMethod == "card" ? 'CARD' : 'CASH',
+        gender: createOrderDto.gender,
+        age: createOrderDto.age,
+        position: createOrderDto.position,
       }
     })
 

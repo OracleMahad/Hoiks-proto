@@ -91,6 +91,15 @@ export class CreateOrderDto {
 
     // @ApiProperty({ example: '안녕하세요' })
     // notes?: string; // 선택적 필드
+
+    @ApiProperty({ example: '' })
+    gender: string;
+
+    @ApiProperty({ example: '' })
+    age: string;
+
+    @ApiProperty({ example: '' })
+    position: string;
   
     constructor(
       orderId: string,

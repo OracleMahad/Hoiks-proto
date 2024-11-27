@@ -10,9 +10,10 @@ import { extname } from 'path';
 @Module({
   imports: [
     // 정적 파일 제공을 위한 ServeStaticModule
-    ServeStaticModule.forRoot({
-      rootPath: join(__dirname, '..', 'uploads'), // 파일이 저장될 uploads 폴더
-    }),
+    // ServeStaticModule.forRoot({
+    //   rootPath: join(__dirname, '..', 'uploads'), // 파일이 저장될 uploads 폴더
+    //   serveRoot: 'file'
+    // }),
     // 파일 업로드를 위한 MulterModule
     MulterModule.register({
       storage: diskStorage({
@@ -30,3 +31,6 @@ import { extname } from 'path';
   controllers: [FileController],
 })
 export class FileModule {}
+
+
+console.log(__dirname);

@@ -133,6 +133,54 @@ export class AdminController {
 
   @ApiOperation({ summary: 'OpenWeather 사용 예정. 현재 dummy 리턴' })
   @Get('waether')
+  getWeatherInfo2(@Query() query: GetByStoreIdQueryDto){
+    return {
+      "coord": {
+        "lon": 126.9778,
+        "lat": 37.5683
+      },
+      "weather": [
+        {
+          "id": 900,
+          "main": "Clear",
+          "description": "clear sky",
+          "icon": "01d"
+        }
+      ],
+      "base": "stations",
+      "main": {
+        "temp": 2.75,
+        "feels_like": 2.43,
+        "temp_min": 0,
+        "temp_max": 3,
+        "pressure": 1015,
+        "humidity": 90
+      },
+      "visibility": 10000,
+      "wind": {
+        "speed": 3.09,
+        "deg": 230
+      },
+      "clouds": {
+        "all": 0
+      },
+      "dt": 1620817926,
+      "sys": {
+        "type": 1,
+        "id": 5509,
+        "country": "KR",
+        "sunrise": 1620781943,
+        "sunset": 1620832541
+      },
+      "timezone": 32400,
+      "id": 1835848,
+      "name": "Seoul",
+      "cod": 200
+    }    
+  }
+
+  @ApiOperation({ summary: 'OpenWeather 사용 예정. 현재 dummy 리턴' })
+  @Get('weather')
   getWeatherInfo(@Query() query: GetByStoreIdQueryDto){
     return {
       "coord": {

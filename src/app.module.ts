@@ -9,9 +9,10 @@ import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { ConfigModule } from '@nestjs/config';
+import { KioskWebModule } from './kiosk-web/kiosk-web.module';
 
 @Module({
-  imports: [KioskModule, AdminModule, FileModule, AuthModule, UsersModule,
+  imports: [KioskWebModule, KioskModule, AdminModule, FileModule, AuthModule, UsersModule,
     ThrottlerModule.forRoot([{
       name: 'long',
       ttl: 60000,

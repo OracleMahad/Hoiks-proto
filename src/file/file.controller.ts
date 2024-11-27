@@ -10,7 +10,7 @@ import { promises as fs } from 'fs';
 @Controller('file')
 export class FileController {
 
-  private readonly allowedExtensions = ['.jpg', '.jpeg', '.png', '.gif'];
+  private readonly allowedExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.pdf'];
   
   // 파일 업로드 API
   @Post('uploads')
