@@ -19,14 +19,14 @@ async function bootstrap() {
     origin: true,
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
     credentials: true,
-    preflightContinue: true,
+    //preflightContinue: true,
   })
-  app.use(
-    helmet({
-      crossOriginResourcePolicy: { policy: "cross-origin" }, // CORS 허용
-      crossOriginEmbedderPolicy: true, // 리소스 임베드 허용
-    })
-  );
+  // app.use(
+  //   helmet({
+  //     crossOriginResourcePolicy: { policy: "cross-origin" }, // CORS 허용
+  //     crossOriginEmbedderPolicy: true, // 리소스 임베드 허용
+  //   })
+  // );
   await app.listen(3000);
 }
 bootstrap();
