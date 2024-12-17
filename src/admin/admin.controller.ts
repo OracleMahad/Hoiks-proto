@@ -133,50 +133,24 @@ export class AdminController {
 
   @ApiOperation({ summary: 'OpenWeather 사용 예정. 현재 dummy 리턴' })
   @Get('waether')
-  getWeatherInfo2(@Query() query: GetByStoreIdQueryDto){
-    return {
-      "coord": {
-        "lon": 126.9778,
-        "lat": 37.5683
-      },
-      "weather": [
-        {
-          "id": 900,
-          "main": "Clear",
-          "description": "clear sky",
-          "icon": "01d"
-        }
-      ],
-      "base": "stations",
-      "main": {
-        "temp": 2.75,
-        "feels_like": 2.43,
-        "temp_min": 0,
-        "temp_max": 3,
-        "pressure": 1015,
-        "humidity": 90
-      },
-      "visibility": 10000,
-      "wind": {
-        "speed": 3.09,
-        "deg": 230
-      },
-      "clouds": {
-        "all": 0
-      },
-      "dt": 1620817926,
-      "sys": {
-        "type": 1,
-        "id": 5509,
-        "country": "KR",
-        "sunrise": 1620781943,
-        "sunset": 1620832541
-      },
-      "timezone": 32400,
-      "id": 1835848,
-      "name": "Seoul",
-      "cod": 200
-    }    
+    async getWeatherInfo2(@Query() query: GetByStoreIdQueryDto){
+      const url = new URL(process.env.OPENWEATHER_URL);
+      url.search = new URLSearchParams({
+        q: query.city || "",
+        appid: process.env.OPENWEATHER_API_KEY,
+        units: 'metric', // 섭씨 온도 단위
+        lang: 'kr',      // 한국어로 응답 받기
+      }).toString();
+
+      const response = await fetch(url.toString());
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      console.log(data);
+      return data;
   }
 
   @ApiOperation({ summary: 'OpenWeather 사용 예정. 현재 dummy 리턴' })
@@ -227,7 +201,7 @@ export class AdminController {
     }    
   }
 
-  @ApiOperation({ summary: '현재 dummy 리턴. 실시간 보다는 오늘의 매출이 의미있을거 같아서 이렇게 했습니다요' })
+  @ApiOperation({ summary: '현재 dummy 리턴. 디비에 데이터가 없어 우선 하드코딩' })
   @Get('dashboard')
   get(@Query() query: GetByStoreIdQueryDto){
     // const oneHourAgo = new Date();

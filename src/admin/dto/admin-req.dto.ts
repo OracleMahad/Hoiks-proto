@@ -3,6 +3,8 @@ import { ApiProperty } from '@nestjs/swagger';
 export class GetByStoreIdQueryDto {
   @ApiProperty({description: "안보낼시 본인 매장. 현재는 안보내도 됨", required: false})
   storeId?: string;
+
+  city? :string
 }
 
 export class CreateCategoryDto {
